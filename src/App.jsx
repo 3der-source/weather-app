@@ -1,14 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
+import fetchData from "./services/api";
+import initialData from "./helpers/initialData";
 import Card from "./components/Card";
 
+
 function App() {
+  const [city, setCity] = useState('');
+  const [data, setData] = useState(initialData);
+
+
+  const handleSubmit = (event) =>{
+    event.preventDefault();
+
+    fetchData(city).then((res)=> {
+      setData(res);
+    });
+  }
+
   return (
-    <div className="flex flex-col w-full h-screen items-center justify-center">
-      <form>
+    <div className="flex flex-col w-full h-screen items-center sm:justify-center p-4">
+      <form onSubmit={ handleSubmit } className="fixed bottom-0 w-full flex p-4 sm:relative justify-center">
         <input 
           type="text" 
           placeholder="Cidade"
-          className="p-3 rounded-lg outline-none" 
+          className="p-3 rounded-lg outline-none shadow-xl w-full sm:max-w-[300px] flex-1"
+          value={city}
+          onChange={ ({ target: { value } }) => setCity(value)}
         />
         <button 
           type="submit"
@@ -17,9 +34,7 @@ function App() {
           Pesquisar
         </button>
       </form>
-
-      <Card />
-
+      <Card data={data}/>
     </div>
   );
 }
